@@ -1,20 +1,26 @@
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
+import pandas as pd
 
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+# load Bible CSV from same folder
+df = pd.read_csv("data/bible_data_set.csv")
 
-# Input data files are available in the read-only "../input/" directory
-# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+def search(keyword):
+    keyword = keyword.lower()
+    # Return all verses that contain the keyword (case-insensitive)
+    matches = df[df["text"].str.lower().str.contains(keyword)]
+    return matches
 
-import os
-for dirname, _, filenames in os.walk('/kaggle/input'):
-    for filename in filenames:
-        print(os.path.join(dirname, filename))
+def main():
+    print("Simple Bible Search")
+    while True:
+        query = input("\nEnter keyword (or 'exit'): ").strip()
+        if query.lower() == "exit":
+            break
 
-# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
-# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
+        results = search(query)
 
-data = pd.read_csv('data/bible_data_set.csv')
-data.head(10)
+        if results.empty:
+            print("No results found.")
+        else:
+            for _, row in results.iterrows():
+                ref = f"{row['book']} {row['chapter']}:{row['verse']}"
+                print(f"- {ref} — {row['text']}")
