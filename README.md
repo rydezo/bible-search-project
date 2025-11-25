@@ -1,5 +1,3 @@
-# Bible Search Project
-
 Simple Python project that lets users search the Bible for verses containing one or more keywords.
 Includes:
 
